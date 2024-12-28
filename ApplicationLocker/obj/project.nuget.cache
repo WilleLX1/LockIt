@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "srybzn8p1vc=",
+  "success": true,
+  "projectFilePath": "C:\\projects\\C#\\ApplicationLocker\\ApplicationLocker\\ApplicationLocker.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\wdani\\.nuget\\packages\\system.codedom\\9.0.0\\system.codedom.9.0.0.nupkg.sha512",
+    "C:\\Users\\wdani\\.nuget\\packages\\system.management\\9.0.0\\system.management.9.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
