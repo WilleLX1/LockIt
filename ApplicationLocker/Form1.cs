@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Management;
 using System.Windows.Forms;
+using Microsoft.Win32;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace ApplicationLocker
 {
     public partial class Form1 : Form
     {
         LockedApp[] lockedApps = new LockedApp[0];
+        private const string RegistryKeyPath = "SOFTWARE\\LockIt";
 
         public Form1()
         {
@@ -38,6 +42,8 @@ namespace ApplicationLocker
                 log("Already elevated");
             }
 
+            LoadLockedAppsFromRegistry();
+
             MonitorProcessStart();
         }
 
@@ -52,6 +58,94 @@ namespace ApplicationLocker
                 txtLog.Text += text + Environment.NewLine;
             }
         }
+
+
+
+        private void SaveLockedAppsToRegistry()
+        {
+            try
+            {
+                using (RegistryKey key = Registry.LocalMachine.CreateSubKey(RegistryKeyPath))
+                {
+                    foreach (var lockedApp in lockedApps)
+                    {
+                        key.SetValue(Crypto.base64Encode(lockedApp.ProcessName), Crypto.base64Encode(lockedApp.PassHash));
+                    }
+                }
+                log("Locked apps saved to registry.");
+            }
+            catch (Exception ex)
+            {
+                log("Error saving to registry: " + ex.Message);
+            }
+        }
+
+        private void DeleteLockedAppFromRegistry(string processName)
+        {
+            // Check if process name is empty
+            if (processName == "")
+            {
+                log("Please enter a process name...");
+                return;
+            }
+
+            try
+            {
+                using (RegistryKey key = Registry.LocalMachine.OpenSubKey(RegistryKeyPath, true))
+                {
+                    if (key != null)
+                    {
+                        key.DeleteValue(Crypto.base64Encode(processName));
+                        log("App " + processName + " removed from registry");
+                    }
+                    else
+                    {
+                        log("No saved locked apps found in registry.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                log("Error deleting from registry: " + ex.Message);
+            }
+        }
+
+        private void LoadLockedAppsFromRegistry()
+        {
+            try
+            {
+                using (RegistryKey key = Registry.LocalMachine.OpenSubKey(RegistryKeyPath))
+                {
+                    if (key != null)
+                    {
+                        // Log
+                        log("Loading locked apps from registry...");
+                        foreach (string processName in key.GetValueNames())
+                        {
+                            string decodedProcessName = Crypto.base64Decode(processName);
+                            string passHash = key.GetValue(processName).ToString();
+                            var lockedApp = new LockedApp(decodedProcessName, passHash, this, true);
+                            Array.Resize(ref lockedApps, lockedApps.Length + 1);
+                            lockedApps[lockedApps.Length - 1] = lockedApp;
+                            checkedListBoxTargets.Items.Add(lockedApp.ProcessName);
+                            checkedListBoxTargets.SetItemChecked(lockedApp.GetPlaceInList(), true);
+                        }
+                        log("Locked apps loaded from registry.");
+                    }
+                    else
+                    {
+                        log("No saved locked apps found in registry.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                log("Error loading from registry: " + ex.Message);
+            }
+        }
+
+
+
 
         private void btnAddApp_Click(object sender, EventArgs e)
         {
@@ -94,6 +188,9 @@ namespace ApplicationLocker
 
             // Log
             log("App " + lockedApp.ProcessName + " added to locked apps");
+
+            // Save to registry
+            SaveLockedAppsToRegistry();
         }
 
         private void MonitorProcessStart()
@@ -201,7 +298,7 @@ namespace ApplicationLocker
                         "");
 
                     // Unlock app
-                    if (lockedApp.UnlockApp(password))
+                    if (lockedApp.UnlockApp(password, true))
                     {
                         // Remove from array of locked apps
                         List<LockedApp> lockedAppsList = new List<LockedApp>(lockedApps);
@@ -211,6 +308,9 @@ namespace ApplicationLocker
                         checkedListBoxTargets.Items.Remove(selected);
                         // Log
                         log("App " + selected + " removed from locked apps");
+
+                        // Delete from registry
+                        DeleteLockedAppFromRegistry(selected);
                     }
                 }
                 else
@@ -333,16 +433,13 @@ namespace ApplicationLocker
 
         Form1 form; // Form1 instance
 
-        public LockedApp(string ProcessName, string Pass, Form1 form)
+        public LockedApp(string processName, string passOrHash, Form1 form, bool isHash = false)
         {
-            PassHash = Crypto.Hash(Pass);
-            // Log
-            form.log("Password: " + Pass);
-            form.log("Password hash: " + PassHash);
-            this.ProcessName = ProcessName;
-            this.PassHash = PassHash;
+            ProcessName = processName;
+            PassHash = isHash ? Crypto.base64Decode(passOrHash) : Crypto.Hash(passOrHash);
             this.form = form;
         }
+
         public int GetPlaceInList()
         {
             // Go through all items in checkedListBoxTargets
@@ -390,7 +487,7 @@ namespace ApplicationLocker
             }
         }
 
-        public bool UnlockApp(string password)
+        public bool UnlockApp(string password, bool removal = false)
         {
             password = Crypto.Hash(password);
             // Log password
@@ -403,7 +500,8 @@ namespace ApplicationLocker
                 // Change the item in checkedListBoxTargets
                 form.checkedListBoxTargets.SetItemChecked(GetPlaceInList(), false);
                 // Show message
-                MessageBox.Show("App unlocked (You are now allowed to run process)", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (!removal)
+                    MessageBox.Show("App unlocked (You are now allowed to run process)", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 // App will continue to run
                 return true;
             }
@@ -411,6 +509,8 @@ namespace ApplicationLocker
             {
                 // Log
                 form.log("Wrong password for app " + ProcessName);
+                // Log difference
+                form.log(PassHash + " != " + password);
                 // Show message
                 MessageBox.Show("Wrong password", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 

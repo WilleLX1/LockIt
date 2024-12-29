@@ -25,5 +25,14 @@ namespace ApplicationLocker
             return Convert.ToBase64String(System.Security.Cryptography.SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(text)));
         }
 
+        public static string base64Encode(string text)
+        {
+            return Convert.ToBase64String(Encoding.UTF8.GetBytes(text));
+        }
+
+        public static string base64Decode(string text)
+        {
+            return Encoding.UTF8.GetString(Convert.FromBase64String(text));
+        }
     }
 }

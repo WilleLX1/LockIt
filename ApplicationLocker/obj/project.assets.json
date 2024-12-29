@@ -116,11 +116,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\projects\\C#\\ApplicationLocker\\ApplicationLocker\\ApplicationLocker.csproj",
+      "projectUniqueName": "C:\\projects\\C#\\LockIt\\ApplicationLocker\\ApplicationLocker.csproj",
       "projectName": "ApplicationLocker",
-      "projectPath": "C:\\projects\\C#\\ApplicationLocker\\ApplicationLocker\\ApplicationLocker.csproj",
+      "projectPath": "C:\\projects\\C#\\LockIt\\ApplicationLocker\\ApplicationLocker.csproj",
       "packagesPath": "C:\\Users\\wdani\\.nuget\\packages\\",
-      "outputPath": "C:\\projects\\C#\\ApplicationLocker\\ApplicationLocker\\obj\\",
+      "outputPath": "C:\\projects\\C#\\LockIt\\ApplicationLocker\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
