@@ -13,6 +13,31 @@ namespace ApplicationLocker
         public Form1()
         {
             InitializeComponent();
+
+            // Elevate
+            Elevator elevator = new Elevator();
+            if (!elevator.IsElevated())
+            {
+                if (elevator.Elevate())
+                {
+                    // Log
+                    log("Elevated");
+                    // Kill current process
+                    Process.GetCurrentProcess().Kill();
+                    return;
+                }
+                else
+                {
+                    // Log
+                    log("Error elevating");
+                }
+            }
+            else
+            {
+                // Log
+                log("Already elevated");
+            }
+
             MonitorProcessStart();
         }
 
@@ -30,13 +55,42 @@ namespace ApplicationLocker
 
         private void btnAddApp_Click(object sender, EventArgs e)
         {
-            // Add Notepad to locked apps
+            // Check if process name is empty
+            if (txtProcessName.Text == "")
+            {
+                log("Please enter a process name...");
+                return;
+            }
+
+            // Check if password is empty
+            if (txtPassword.Text == "")
+            {
+                log("Please enter a password...");
+                return;
+            }
+
+            // Check if process name is already locked
+            foreach (var _lockedApp in lockedApps)
+            {
+                if (_lockedApp.ProcessName == txtProcessName.Text)
+                {
+                    log("App " + txtProcessName.Text + " already added");
+                    return;
+                }
+            }
+
+            // Create object and lock app
             LockedApp lockedApp = new LockedApp(txtProcessName.Text, txtPassword.Text, this);
             lockedApp.Lock();
 
-            // Add to array
+            // Add to array of locked apps
             Array.Resize(ref lockedApps, lockedApps.Length + 1);
             lockedApps[lockedApps.Length - 1] = lockedApp;
+
+            // Update list of locked apps
+            checkedListBoxTargets.Items.Add(lockedApp.ProcessName);
+            // Change the item in checkedListBoxTargets
+            checkedListBoxTargets.SetItemChecked(lockedApp.GetPlaceInList(), true);
 
             // Log
             log("App " + lockedApp.ProcessName + " added to locked apps");
@@ -53,6 +107,9 @@ namespace ApplicationLocker
                     {
                         startWatcher.EventArrived += new EventArrivedEventHandler(ProcessStarted);
                         startWatcher.Start();
+
+                        // Log
+                        log("Monitoring process started");
 
                         // Keep the watcher running
                         while (true)
@@ -110,6 +167,161 @@ namespace ApplicationLocker
             return Task.CompletedTask;
         }
 
+        private void btnRemoveApp_Click(object sender, EventArgs e)
+        {
+            // Check if item is selected
+            if (checkedListBoxTargets.SelectedIndex == -1)
+            {
+                log("Please select an item to remove...");
+                return;
+            }
+
+            // Get selected item
+            string selected = checkedListBoxTargets.SelectedItem.ToString();
+
+            if (!string.IsNullOrEmpty(selected))
+            {
+                // Find locked app
+                LockedApp lockedApp = null;
+                foreach (var _lockedApp in lockedApps)
+                {
+                    if (_lockedApp.ProcessName == selected)
+                    {
+                        lockedApp = _lockedApp;
+                        break;
+                    }
+                }
+                // Check if locked app was found
+                if (lockedApp != null)
+                {
+                    // Ask for password
+                    string password = Microsoft.VisualBasic.Interaction.InputBox(
+                        "Enter password for " + lockedApp.ProcessName,
+                        "Password",
+                        "");
+
+                    // Unlock app
+                    if (lockedApp.UnlockApp(password))
+                    {
+                        // Remove from array of locked apps
+                        List<LockedApp> lockedAppsList = new List<LockedApp>(lockedApps);
+                        lockedAppsList.Remove(lockedApp);
+                        lockedApps = lockedAppsList.ToArray();
+                        // Update list of locked apps
+                        checkedListBoxTargets.Items.Remove(selected);
+                        // Log
+                        log("App " + selected + " removed from locked apps");
+                    }
+                }
+                else
+                {
+                    // Log
+                    log("App " + selected + " not found in locked apps");
+                }
+            }
+        }
+
+
+        private void checkedListBoxTargets_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Log
+            log("Selected index: " + checkedListBoxTargets.SelectedIndex);
+        }
+
+        private void checkedListBoxTargets_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            // Check if item is checked
+            if (e.NewValue == CheckState.Checked)
+            {
+                // Log
+                log("Item checked: " + checkedListBoxTargets.Items[e.Index].ToString());
+                // Find locked app
+                LockedApp lockedApp = null;
+                foreach (var _lockedApp in lockedApps)
+                {
+                    if (_lockedApp.ProcessName == checkedListBoxTargets.Items[e.Index].ToString())
+                    {
+                        lockedApp = _lockedApp;
+                        break;
+                    }
+                }
+                // Check if locked app was found
+                if (lockedApp != null)
+                {
+                    // Check if app is locked
+                    if (lockedApp.IsLocked)
+                    {
+                        // Log
+                        log("App " + lockedApp.ProcessName + " already locked");
+                        return;
+                    }
+                    // Lock app
+                    lockedApp.Lock();
+                    // Log
+                    log("App " + lockedApp.ProcessName + " added to locked apps");
+                }
+                else
+                {
+                    // Log
+                    log("App " + checkedListBoxTargets.Items[e.Index].ToString() + " not found in locked apps");
+                }
+            }
+            else
+            {
+                // Log
+                log("Item unchecked: " + checkedListBoxTargets.Items[e.Index].ToString());
+                // Find locked app
+                LockedApp lockedApp = null;
+                foreach (var _lockedApp in lockedApps)
+                {
+                    if (_lockedApp.ProcessName == checkedListBoxTargets.Items[e.Index].ToString())
+                    {
+                        lockedApp = _lockedApp;
+                        break;
+                    }
+                }
+                // Check if locked app was found
+                if (lockedApp != null)
+                {
+                    // Check if app is locked
+                    if (lockedApp.IsLocked)
+                    {
+                        // Ask for password
+                        string password = Microsoft.VisualBasic.Interaction.InputBox(
+                            "Enter password for " + lockedApp.ProcessName,
+                            "Password",
+                            "");
+                        // Unlock app
+                        if (lockedApp.UnlockApp(password))
+                        {
+                            // Change is locked to false
+                            lockedApp.IsLocked = false;
+                            // Log
+                            log("App " + lockedApp.ProcessName + " unlocked");
+                        }
+                        else
+                        {
+                            // Log
+                            log("App " + lockedApp.ProcessName + " not unlocked");
+                            // Change the item in checkedListBoxTargets
+                            checkedListBoxTargets.SetItemChecked(lockedApp.GetPlaceInList(), true);
+                            e.NewValue = CheckState.Checked;
+                            checkedListBoxTargets_ItemCheck(sender, e);
+                        }
+                    }
+                    else
+                    {
+                        // Log
+                        log("App " + lockedApp.ProcessName + " not locked");
+                    }
+                }
+                else
+                {
+                    // Log
+                    log("App " + checkedListBoxTargets.Items[e.Index].ToString() + " not found in locked apps");
+                }
+            }
+        }
     }
 
     public class LockedApp
@@ -130,6 +342,19 @@ namespace ApplicationLocker
             this.ProcessName = ProcessName;
             this.PassHash = PassHash;
             this.form = form;
+        }
+        public int GetPlaceInList()
+        {
+            // Go through all items in checkedListBoxTargets
+            for (int i = 0; i < form.checkedListBoxTargets.Items.Count; i++)
+            {
+                // Check if item is the same as the process name
+                if (form.checkedListBoxTargets.Items[i].ToString() == ProcessName)
+                {
+                    return i;
+                }
+            }
+            return -1;
         }
 
         public void Lock()
@@ -165,7 +390,7 @@ namespace ApplicationLocker
             }
         }
 
-        public void UnlockApp(string password)
+        public bool UnlockApp(string password)
         {
             password = Crypto.Hash(password);
             // Log password
@@ -173,12 +398,14 @@ namespace ApplicationLocker
             if (password == PassHash)
             {
                 IsLocked = false;
-                Process.Start(ProcessName);
                 // Log
                 form.log("App " + ProcessName + " unlocked");
+                // Change the item in checkedListBoxTargets
+                form.checkedListBoxTargets.SetItemChecked(GetPlaceInList(), false);
                 // Show message
-                MessageBox.Show("App unlocked", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("App unlocked (You are now allowed to run process)", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 // App will continue to run
+                return true;
             }
             else
             {
@@ -186,6 +413,8 @@ namespace ApplicationLocker
                 form.log("Wrong password for app " + ProcessName);
                 // Show message
                 MessageBox.Show("Wrong password", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                return false;
             }
         }
     }
