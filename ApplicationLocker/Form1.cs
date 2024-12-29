@@ -13,10 +13,25 @@ namespace ApplicationLocker
     {
         LockedApp[] lockedApps = new LockedApp[0];
         private const string RegistryKeyPath = "SOFTWARE\\LockIt";
+        private NotifyIcon notifyIcon;
 
         public Form1()
         {
             InitializeComponent();
+
+            // Initialize NotifyIcon
+            notifyIcon = new NotifyIcon();
+            notifyIcon.Icon = SystemIcons.Shield;
+            notifyIcon.Text = "LockIt";
+            notifyIcon.Visible = true;
+            notifyIcon.DoubleClick += NotifyIcon_DoubleClick;
+
+            // Add context menu to NotifyIcon
+            var contextMenu = new ContextMenuStrip();
+            contextMenu.Items.Add("Show", null, (s, e) => ShowForm());
+            contextMenu.Items.Add("Hide", null, (s, e) => HideForm());
+            contextMenu.Items.Add("Exit", null, (s, e) => ExitApplication());
+            notifyIcon.ContextMenuStrip = contextMenu;
 
             // Elevate
             Elevator elevator = new Elevator();
@@ -47,6 +62,37 @@ namespace ApplicationLocker
             MonitorProcessStart();
         }
 
+        private void NotifyIcon_DoubleClick(object sender, EventArgs e)
+        {
+            ShowForm();
+        }
+        
+        private void ShowForm()
+        {
+            this.Show();
+            this.WindowState = FormWindowState.Normal;
+        }
+        
+        private void HideForm()
+        {
+            this.Hide();
+        }
+        
+        private void ExitApplication()
+        {
+            notifyIcon.Visible = false;
+            Application.Exit();
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                this.Hide();
+            }
+        }
+        
         public void log(string text)
         {
             if (txtLog.InvokeRequired)
@@ -58,8 +104,6 @@ namespace ApplicationLocker
                 txtLog.Text += text + Environment.NewLine;
             }
         }
-
-
 
         private void SaveLockedAppsToRegistry()
         {
@@ -82,8 +126,7 @@ namespace ApplicationLocker
 
         private void DeleteLockedAppFromRegistry(string processName)
         {
-            // Check if process name is empty
-            if (processName == "")
+            if (string.IsNullOrEmpty(processName))
             {
                 log("Please enter a process name...");
                 return;
@@ -144,20 +187,15 @@ namespace ApplicationLocker
             }
         }
 
-
-
-
         private void btnAddApp_Click(object sender, EventArgs e)
         {
-            // Check if process name is empty
-            if (txtProcessName.Text == "")
+            if (string.IsNullOrEmpty(txtProcessName.Text))
             {
                 log("Please enter a process name...");
                 return;
             }
 
-            // Check if password is empty
-            if (txtPassword.Text == "")
+            if (string.IsNullOrEmpty(txtPassword.Text))
             {
                 log("Please enter a password...");
                 return;
@@ -173,7 +211,6 @@ namespace ApplicationLocker
                 }
             }
 
-            // Create object and lock app
             LockedApp lockedApp = new LockedApp(txtProcessName.Text, txtPassword.Text, this);
             lockedApp.Lock();
 
@@ -259,7 +296,6 @@ namespace ApplicationLocker
                 lockedApp.UnlockApp(password);
 
                 lockedApp.IsPromptingPassword = false;
-
             }
             return Task.CompletedTask;
         }
@@ -321,10 +357,8 @@ namespace ApplicationLocker
             }
         }
 
-
         private void checkedListBoxTargets_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Log
             log("Selected index: " + checkedListBoxTargets.SelectedIndex);
         }
 
@@ -431,7 +465,7 @@ namespace ApplicationLocker
         public bool IsLocked { get; set; }
         public bool IsPromptingPassword { get; set; } = false;
 
-        Form1 form; // Form1 instance
+        Form1 form;
 
         public LockedApp(string processName, string passOrHash, Form1 form, bool isHash = false)
         {

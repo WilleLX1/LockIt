@@ -7,16 +7,16 @@
       "RelativeMoniker": "D:0:0:{EB0BD21B-62C9-4AE6-A11E-047B0E0B6F01}|ApplicationLocker\\ApplicationLocker.csproj|solutionrelative:applicationlocker\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{EB0BD21B-62C9-4AE6-A11E-047B0E0B6F01}|ApplicationLocker\\ApplicationLocker.csproj|c:\\projects\\c#\\lockit\\applicationlocker\\crypto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EB0BD21B-62C9-4AE6-A11E-047B0E0B6F01}|ApplicationLocker\\ApplicationLocker.csproj|solutionrelative:applicationlocker\\crypto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{EB0BD21B-62C9-4AE6-A11E-047B0E0B6F01}|ApplicationLocker\\ApplicationLocker.csproj|c:\\projects\\c#\\lockit\\applicationlocker\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EB0BD21B-62C9-4AE6-A11E-047B0E0B6F01}|ApplicationLocker\\ApplicationLocker.csproj|solutionrelative:applicationlocker\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{EB0BD21B-62C9-4AE6-A11E-047B0E0B6F01}|ApplicationLocker\\ApplicationLocker.csproj|C:\\projects\\C#\\LockIt\\applicationlocker\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{EB0BD21B-62C9-4AE6-A11E-047B0E0B6F01}|ApplicationLocker\\ApplicationLocker.csproj|solutionrelative:applicationlocker\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{EB0BD21B-62C9-4AE6-A11E-047B0E0B6F01}|ApplicationLocker\\ApplicationLocker.csproj|c:\\projects\\c#\\lockit\\applicationlocker\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EB0BD21B-62C9-4AE6-A11E-047B0E0B6F01}|ApplicationLocker\\ApplicationLocker.csproj|solutionrelative:applicationlocker\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{EB0BD21B-62C9-4AE6-A11E-047B0E0B6F01}|ApplicationLocker\\ApplicationLocker.csproj|c:\\projects\\c#\\lockit\\applicationlocker\\crypto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EB0BD21B-62C9-4AE6-A11E-047B0E0B6F01}|ApplicationLocker\\ApplicationLocker.csproj|solutionrelative:applicationlocker\\crypto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,7 +30,7 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "Crypto.cs",
               "DocumentMoniker": "C:\\projects\\C#\\LockIt\\ApplicationLocker\\Crypto.cs",
               "RelativeDocumentMoniker": "ApplicationLocker\\Crypto.cs",
@@ -38,20 +38,20 @@
               "RelativeToolTip": "ApplicationLocker\\Crypto.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAYwBsAAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-29T02:41:08.208Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-12-29T02:41:08.208Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
               "Title": "Form1.Designer.cs",
               "DocumentMoniker": "C:\\projects\\C#\\LockIt\\ApplicationLocker\\Form1.Designer.cs",
               "RelativeDocumentMoniker": "ApplicationLocker\\Form1.Designer.cs",
               "ToolTip": "C:\\projects\\C#\\LockIt\\ApplicationLocker\\Form1.Designer.cs",
               "RelativeToolTip": "ApplicationLocker\\Form1.Designer.cs",
-              "ViewState": "AgIAAJMAAAAAAAAAAAAowKEAAAAOAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAKEAAAAOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-29T01:31:11.172Z"
+              "WhenOpened": "2024-12-29T01:31:11.172Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -61,7 +61,7 @@
               "RelativeDocumentMoniker": "ApplicationLocker\\Form1.cs",
               "ToolTip": "C:\\projects\\C#\\LockIt\\ApplicationLocker\\Form1.cs",
               "RelativeToolTip": "ApplicationLocker\\Form1.cs",
-              "ViewState": "AgIAAGEAAAAAAAAAAAAswIIAAABjAAAAAAAAAA==",
+              "ViewState": "AgIAABAAAAAAAAAAAAAiwBkAAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-12-28T02:18:01.387Z",
               "EditorCaption": ""
@@ -72,10 +72,11 @@
               "Title": "Form1.cs [Design]",
               "DocumentMoniker": "C:\\projects\\C#\\LockIt\\ApplicationLocker\\Form1.cs",
               "RelativeDocumentMoniker": "ApplicationLocker\\Form1.cs",
-              "ToolTip": "C:\\projects\\C#\\ApplicationLocker\\ApplicationLocker\\Form1.cs [Design]",
-              "RelativeToolTip": "..\\ApplicationLocker\\ApplicationLocker\\Form1.cs [Design]",
+              "ToolTip": "C:\\projects\\C#\\LockIt\\ApplicationLocker\\Form1.cs [Design]",
+              "RelativeToolTip": "ApplicationLocker\\Form1.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-28T02:17:09.919Z"
+              "WhenOpened": "2024-12-28T02:17:09.919Z",
+              "EditorCaption": " [Design]"
             }
           ]
         }

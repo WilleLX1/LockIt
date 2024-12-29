@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ApplicationLocker")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7a51b446c1287c88a420f150acc0bba05b32b710")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+18f3b07c4ca9cc06a51174e1e0b1f7306966f723")]
 [assembly: System.Reflection.AssemblyProductAttribute("ApplicationLocker")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ApplicationLocker")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

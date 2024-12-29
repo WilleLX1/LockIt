@@ -53,7 +53,7 @@
             // btnAddApp
             // 
             btnAddApp.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            btnAddApp.Location = new Point(6, 112);
+            btnAddApp.Location = new Point(6, 100);
             btnAddApp.Name = "btnAddApp";
             btnAddApp.Size = new Size(295, 28);
             btnAddApp.TabIndex = 1;
@@ -129,7 +129,7 @@
             groupBox1.Controls.Add(txtPassword);
             groupBox1.Location = new Point(394, 12);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(307, 146);
+            groupBox1.Size = new Size(307, 134);
             groupBox1.TabIndex = 8;
             groupBox1.TabStop = false;
             groupBox1.Text = "Add Processes:";
@@ -144,7 +144,7 @@
             Controls.Add(checkedListBoxTargets);
             Controls.Add(txtLog);
             Name = "Form1";
-            Text = "Form1";
+            Text = "LockIt";
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             ResumeLayout(false);
